@@ -1,6 +1,7 @@
+import NewsArticlesGrid from "@/components/NewsArticlesGrid";
 import { NewsArticle } from "@/models/NewsArticles";
 import { FormEvent, useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, Spinner } from "react-bootstrap";
 
 const SearchNewsPage = () => {
   const [searchResults, setSearchResults] = useState<NewsArticle[] | null>(
@@ -16,7 +17,19 @@ const SearchNewsPage = () => {
     const searchQuery = formData.get("searchQuery")?.toString().trim();
 
     if (searchQuery) {
-      alert(searchQuery);
+      try {
+        setSearchResults(null);
+        setSearchResultsLoadingIsError(false);
+        setSearchResultsLoading(true);
+        const response = await fetch("/api/search-news?q=" + searchQuery);
+        const articles: NewsArticle[] = await response.json();
+        setSearchResults(articles);
+      } catch (error) {
+        console.log(error);
+        setSearchResultsLoadingIsError(true);
+      } finally {
+        setSearchResultsLoading(false);
+      }
     }
   }
 
@@ -35,6 +48,16 @@ const SearchNewsPage = () => {
           Search
         </Button>
       </Form>
+      <div className="d-flex flex-column align-items-center">
+        {searchResultsLoading && <Spinner animation="border" />}
+        {searchResultsLoadingIsError && (
+          <p>Something went wrong. Please try again.</p>
+        )}
+        {searchResults?.length === 0 && (
+          <p>Nothing found. Try a different query.</p>
+        )}
+        {searchResults && <NewsArticlesGrid articles={searchResults} />}
+      </div>
     </main>
   );
 };

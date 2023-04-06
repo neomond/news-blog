@@ -4,6 +4,8 @@ import { Inter } from "next/font/google";
 import { GetServerSideProps } from "next";
 import { NewsArticle, NewsResponse } from "@/models/NewsArticles";
 import NewsArticleEntry from "@/components/NewsArticleEntry";
+import NewsArticlesGrid from "@/components/NewsArticlesGrid";
+import { Alert } from "react-bootstrap";
 
 interface BreakingNewsPageProps {
   newsArticles: NewsArticle[];
@@ -33,7 +35,12 @@ export default function BreakingNewsPage({
       </Head>
       <main>
         <h1>Breaking News</h1>
-        <NewsArticleEntry article={newsArticles[0]} />
+        <Alert>
+          This page uses <strong>getServerSideProps</strong> to fetch data
+          server-side on every request. This allows search engines to crawl the
+          page content and <strong>improves SEO</strong>.
+        </Alert>
+        <NewsArticlesGrid articles={newsArticles} />
       </main>
     </>
   );

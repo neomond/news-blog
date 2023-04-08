@@ -23,6 +23,7 @@ export const getServerSideProps: GetServerSideProps<
   return {
     props: { newsArticles: newsResponse.articles },
   };
+  // let error go to 500 page (in production mode)
 };
 
 export default function BreakingNewsPage({
